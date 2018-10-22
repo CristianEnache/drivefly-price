@@ -1,0 +1,42 @@
+{
+  "buffer": "",
+  "errors": "",
+  "toasts": [],
+  "result": [
+    {
+      "promo_id": "1",
+      "promocode": "east13",
+      "discount": "5",
+      "promo_start": "2000-01-01",
+      "promo_end": "2020-12-31"
+    },
+    {
+      "promo_id": "2",
+      "promocode": "save10",
+      "discount": "10",
+      "promo_start": "2000-01-01",
+      "promo_end": "2020-12-31"
+    },
+    {
+      "promo_id": "3",
+      "promocode": "save15",
+      "discount": "15",
+      "promo_start": "2000-01-01",
+      "promo_end": "2020-12-31"
+    },
+    {
+      "promo_id": "4",
+      "promocode": "save20",
+      "discount": "20",
+      "promo_start": "2000-01-01",
+      "promo_end": "2020-12-31"
+    },
+    {
+      "promo_id": "5",
+      "promocode": "email15",
+      "discount": "15",
+      "promo_start": "0000-00-00",
+      "promo_end": "2020-12-31"
+    }
+  ]
+}
