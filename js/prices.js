@@ -1,33 +1,81 @@
-window.baseurl = "http://drivefly.xyz";
+    window.baseurl = "http://drivefly.xyz";
 
 var prices = new Vue({
     el: '#prices_app',
     data : {
         sites : null,
-        current_site : null,
-
         site_products : null,
-        current_product : null,
+        current_site_key : null,
+        current_product_key : null,
         promo : null,
         table : {
             months : ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec']
+        },
+        options : {
+            grid_threshold : 15,
+            grid_limit : 20
         }
     },
 
     mounted : function(){
-        this.getSitesAndProducts();
+        this.getSites();
     },
 
     methods : {
 
+        changeGridValues : function(giKey, evt){
+
+            // Make a grid_temp array to hold the initial values of the fields
+            if('undefined' == typeof this.sites[this.current_site_key].site_products[this.current_product_key].grid_temp)
+                this.sites[this.current_site_key].site_products[this.current_product_key].grid_temp = [];
+
+            //
+            // Copy grid item from original grid object to grid_temp
+            //
+
+            // If current Grid Item key property is not set on the temp object
+            if('undefined' == typeof this.sites[this.current_site_key].site_products[this.current_product_key].grid_temp[giKey]){
+
+                // Create empty object as property
+                this.sites[this.current_site_key].site_products[this.current_product_key].grid_temp[giKey] = {};
+
+                // Remove reactivity from temp object property
+                Object.assign(this.sites[this.current_site_key].site_products[this.current_product_key].grid_temp[giKey], this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey]);
+            }
+
+            // Prepare iteration
+            var prices = this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey];
+
+            for (var indx in prices) {
+
+                if(indx == 'band' || indx == 0)
+                    continue; // exits current iteration if keys are 'band' or first key
+
+                var original_value = this.sites[this.current_site_key].site_products[this.current_product_key].grid_temp[giKey][indx];
+
+                 var newval = parseFloat(
+                    Math.round((parseFloat(original_value) + parseFloat(evt.target.value)) * 100) / 100
+                ).toFixed(2);
+
+                prices[indx] = newval;
+            }
+        },
+
+        saveGridValues : function(giKey){
+
+        },
+
+        range : function (start, end) {
+            return Array(end - start + 1).fill().map((_, idx) => start + idx)
+        },
+
         /*
             Gets list of products, organized by "sites"
         */
-        getSitesAndProducts : function(){
-
-            var pricesapp = this;
+        getSites : function(){
 
             $.ajax({
+                context : this,
                 url: window.baseurl + '/request_dummy_data/admin_price_get_products.json',
                 type: 'GET',
                 dataType: 'json',
@@ -35,7 +83,7 @@ var prices = new Vue({
                     '_token' : 'entersessiontokenhere',
                 },
             }).done(function(response) {
-                Vue.set(pricesapp, 'sites', response.result);
+                Vue.set(this, 'sites', response.result);
             });
         },
 
@@ -43,49 +91,24 @@ var prices = new Vue({
             Shows the products belonging to one "site"
         */
 
-        showSiteProducts : function(site){
+        showSiteProducts : function(site, sKey){
 
-            if(site.selected)
-                return false;
-
-            Vue.set(this, 'current_product', null);
-
-            var pricesapp = this;
-
-                // All sites not selected
-                $.each(pricesapp.sites, function(i, el){
-                    Vue.set(pricesapp.sites[i], 'selected', false);
-                });
-
-            // Current site selected
-            Vue.set(site, 'selected', true);
+            // Prevent clicking on selected button
+            if(site.selected) return false;
 
             // Set site_products
-            Vue.set(this, 'current_site', site);
-            Vue.set(this, 'site_products', site.site_products);
+            Vue.set(this, 'current_site_key', sKey);
+            Vue.set(this, 'current_product_key', null);
         },
 
 
-
-        getProduct : function(siteproduct){
+        getProduct : function(siteproduct, spKey){
 
             if(siteproduct.selected)
                 return false;
 
-            var pricesapp = this;
-
             // Set current_product equal to the clicked product
-            Vue.set(pricesapp, 'current_product', siteproduct);
-
-
-                // All sites not selected
-                $.each(pricesapp.site_products, function(i, el){
-                    Vue.set(pricesapp.site_products[i], 'selected', false);
-                });
-
-                // Current site selected
-                Vue.set(siteproduct, 'selected', true);
-
+            Vue.set(this, 'current_product_key', spKey);
 
             $.ajax({
                 url: window.baseurl + '/request_dummy_data/admin_price_get_product.json',
@@ -94,6 +117,7 @@ var prices = new Vue({
                 data: {
                     '_token' : 'entersessiontokenhere',
                 },
+                context: this,
             }).done(function(response) {
 
                 // Update values in component data
@@ -102,7 +126,7 @@ var prices = new Vue({
                 Vue.set(siteproduct, 'rules', response.result.rules);
 
                 // Get promo for the current product
-                pricesapp.getPromo(siteproduct);
+                this.getPromo(siteproduct);
             });
 
         },

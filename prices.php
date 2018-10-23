@@ -83,17 +83,17 @@ include('top_search.php');
 <!--	"Site" selector	-->
 	<template v-if="null !== sites">
 		<div class="btn-group mr-100 mt-20">
-			<button type="button" class="btn btn-default consolidators" v-bind:class="(site.selected) ? 'btn-success' : ''" v-for="site in sites" v-text="site.site_name" v-on:click="showSiteProducts(site)"></button>
+			<button type="button" class="btn btn-default consolidators" v-bind:class="(sKey == current_site_key) ? 'btn-success' : ''" v-for="(site, sKey) in sites" v-text="site.site_name" v-on:click="showSiteProducts(site, sKey)"></button>
 		</div>
 	</template>
 
 <!--	Product selector	-->
-	<template v-if="null !== site_products">
+	<template v-if="null !== current_site_key">
 		<div class="btn-group mt-20">
 
-			<button type="button" class="btn btn-default packages" v-bind:class="(siteproduct.selected) ? 'btn-success' : ''" v-for="siteproduct in site_products" v-on:click="getProduct(siteproduct)">
+			<button type="button" class="btn btn-default packages" v-bind:class="(spKey == current_product_key) ? 'btn-success' : ''" v-for="(siteproduct, spKey) in sites[current_site_key].site_products" v-on:click="getProduct(siteproduct, spKey)">
 				<span class="badge" v-text="siteproduct.product_airport"></span>
-				<span class="badge" v-text="siteproduct.product_type"></span>  <span v-text="current_site.site_name"></span>
+				<span class="badge" v-text="siteproduct.product_type"></span>  <span v-text="sites[current_site_key].site_name"></span>
 			</button>
 
 		</div>
@@ -108,11 +108,11 @@ include('top_search.php');
 
 	<!-- // results -->
 
-	<template v-if="null !== current_product">
+	<template v-if="null !== current_product_key">
 		<div id="search-result" class="panel panel-default days">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel-lists">
 			<div class="panel-heading" style="text-align:center; color: #333; background-color: #f5f5f5; border-color: #ddd;">
-				<h3 class=""><span class="badge" v-text="current_product.product_airport"></span> <span class="badge" v-text="current_product.product_type">MG</span> Drivefly </h3>
+				<h3 class=""><span class="badge" v-text="sites[current_site_key].site_products[current_product_key].product_airport"></span> <span class="badge" v-text="sites[current_site_key].site_products[current_product_key].product_type">MG</span> Drivefly </h3>
 			</div>
 			<div class="panel-body">
 				<table class="table table-hover">
@@ -125,10 +125,10 @@ include('top_search.php');
 					</tr>
 					</thead>
 					<tbody>
-					<template v-if="'undefined' !== typeof current_product.bands">
+					<template v-if="'undefined' !== typeof sites[current_site_key].site_products[current_product_key].bands">
 						<tr v-for="(month, mKey) in table.months">
 							<td v-text="month"></td>
-							<td v-for="(item, key) in current_product.bands[mKey]" v-text="item.b" v-bind:class="'band' + item.b"></td>
+							<td v-for="(item, key) in sites[current_site_key].site_products[current_product_key].bands[mKey]" v-text="item.b" v-bind:class="'band' + item.b"></td>
 						</tr>
 					</template>
 					</tbody>
@@ -137,33 +137,71 @@ include('top_search.php');
 			</div>
 		</div>
 
-
-
-
-
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 price-lists margined">
-			<table class="table table-hover bandA" style="">
+			<table class="table table-hover band " v-bind:class="'band' + gridItem.band" style="" v-for="(gridItem, giKey) in sites[current_site_key].site_products[current_product_key].grid">
 				<thead>
 				<tr>
+					<th></th>
+					<template v-for="(n, index) in 15">
+						<th v-text="n"></th>
+					</template>
+					<th>Next days</th>
+					<template v-for="(nr, i) in range((options.grid_threshold + 1), options.grid_limit)">
+						<th v-text="nr"></th>
+					</template>
 				</tr>
 				</thead>
 				<tbody>
-				<tr> </tr>
+				<tr>
+					<td></td>
+					<template v-for="(el, eKey) in gridItem">
+
+						<!-- Editable inputs -->
+						<template v-if="eKey > 0 && eKey <= options.grid_threshold">
+							<td>
+								<div class="form-group">
+									<input class="" type="text" v-model="gridItem[eKey]">
+								</div>
+							</td>
+						</template>
+
+						<!-- Next days input disabled -->
+						<td v-if="eKey == (options.grid_threshold + 1)">
+							<div class="form-group">
+								<input class="" type="text" v-model="gridItem[0]" disabled>
+							</div>
+						</td>
+
+						<!-- Rest of disabled inputs -->
+						<template v-if="eKey > options.grid_threshold && eKey <= options.grid_limit">
+							<td>
+								<div class="form-group">
+									<input class="" type="text" v-model="gridItem[eKey]" disabled>
+								</div>
+							</td>
+						</template>
+
+					</template>
+				</tr>
 
 				<tr>
-					<td colspan="21">
-						<div class="col-xs-4">
-							<span style="font-size:20px;" class="">A</span>
-
-							<span class="form-inline" style="margin-left: 50px;">
+					<td colspan="22">
+						<div class="row">
+							<div class="col-4">
+								<span class="fsz-20" v-text="gridItem.band"></span>
+								<span class="form-inline ml-50">
                                    <div class="form-group">
                                        <label>+ -</label>
-                                       <input type="number" step="1" class="form-controler" style="width: 70px">
+                                       <input type="number" step="1" class="form-controler" style="width: 70px" v-on:change="changeGridValues(giKey, $event)">
                                    </div>
                                </span>
-						</div>
-						<div class="col-xs-8">
-							<button type="button" class="btn btn-large btn-success pull-right">Save</button>
+							</div>
+							<div class="col-4"></div>
+
+							<div class="col-4 text-right">
+								<button type="button" class="btn btn-large btn-success pull-right" v-on:click="saveGridValues(giKey)">Save</button>
+							</div>
+
 						</div>
 					</td>
 				</tr>

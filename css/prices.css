@@ -13,3 +13,25 @@
 .mt-20{
     margin-top:20px;
 }
+
+.ml-50{
+    margin-left:50px;
+}
+
+.fsz-20{
+    font-size:20px;
+}
+
+table.band th{
+    text-align: center;
+}
+
+.days input{
+    background-color: #ffffff;
+    width:100%;
+    border: 1px solid #dddddd;
+}
+
+.days input:disabled{
+    background-color: #dddddd;
+}
