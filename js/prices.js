@@ -24,10 +24,7 @@ var pricesApp = new Vue({
     },
 
     mounted : function(){
-
-
         this.getSites();
-
     },
 
     methods : {
@@ -131,16 +128,34 @@ var pricesApp = new Vue({
 
                     Vue.set(this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey], i, new_value);
                 }
-
-
-
-
-
-
-
-
-
             }
+
+        },
+
+        saveGridItem : function(giKey, evt){
+
+
+            var grid_item = this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey];
+            delete grid_item.knobval; // not for storing in the DB
+            delete grid_item.band; // not for storing in the DB
+
+            $.ajax({
+                context : this,
+                url: window.baseurl,
+                type: 'post',
+                dataType: 'json',
+                data: {
+                    '_token' : 'entersessiontokenhere',
+                    'site_id' : this.sites[this.current_site_key].site_id,
+                    'product_id' : this.sites[this.current_site_key].site_products[this.current_product_key].product_id,
+                    'action' : 'saveGrid',
+                    'band' : grid_item.band,
+                    'grid_item' : JSON.stringify(grid_item)
+                },
+                context: this,
+            }).done(function(response) {
+
+            });
 
         },
 

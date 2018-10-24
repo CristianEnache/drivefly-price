@@ -902,7 +902,6 @@ include('top_search.php');
 				}
 				?>
 			</tr>
-
 			<tr>
 				<td colspan="21">
 					<div class="col-xs-4">

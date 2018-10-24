@@ -219,7 +219,7 @@ include('top_search.php');
 							</div>
 							<div class="col-4"></div>
 							<div class="col-4 text-right">
-								<button type="button" class="btn btn-large btn-success pull-right" v-on:click="saveGridValues(giKey, $event)">Save</button>
+								<button type="button" class="btn btn-large btn-success pull-right" v-on:click="saveGridItem(giKey, $event)">Save</button>
 							</div>
 						</div>
 					</td>
