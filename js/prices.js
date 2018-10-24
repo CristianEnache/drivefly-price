@@ -40,7 +40,10 @@ var pricesApp = new Vue({
                 dataType: 'json',
                 data: {
                     '_token' : 'entersessiontokenhere',
-                    'band' : this.sites[this.current_site_key].site_products[this.current_product_key].bands
+                    'site_id' : this.sites[this.current_site_key].site_id,
+                    'product_id' : this.sites[this.current_site_key].site_products[this.current_product_key].product_id,
+                    'action' : 'saveBands',
+                    'band' : JSON.stringify(this.sites[this.current_site_key].site_products[this.current_product_key].bands)
                 },
                 context: this,
             }).done(function(response) {

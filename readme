@@ -1,6 +1,9 @@
 
-Done some
+To do:
 
-1. Don't use the logic of iterating through the months as per existing model; a JSON array would be just fine
-2. You might remove the js on top since not using for this page; left it there to see the model of js
-3. on ajax calls please use plain db queries (no ORMs)
+Link to /js/prices.js /css/prices.css and vue library found in header
+copy div#prices_app
+
+Copy request_dummy_data too, so you have something to look at
+
+Everything should work/

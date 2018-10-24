@@ -41,9 +41,10 @@ include('_functions.php');
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.0.1/js/tempusdominus-bootstrap-4.min.js"></script>
 	<!--	<script src="_design-01/js/dropzone.js"></script>-->
 
-	<link rel="stylesheet" type="text/css" href="css/prices.css" >
 
+	<link rel="stylesheet" type="text/css" href="css/prices.css" >
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+
 </head>
 <body>
 <div class="alertZone">
