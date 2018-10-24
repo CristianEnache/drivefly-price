@@ -78,6 +78,7 @@ include('top_search.php');
 	</table>
 </div>
 
+<!-- // Start prices app -->
 <div id="prices_app">
 
 <!--	"Site" selector	-->
@@ -112,7 +113,11 @@ include('top_search.php');
 		<div id="search-result" class="panel panel-default days">
 		<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 panel-lists">
 			<div class="panel-heading" style="text-align:center; color: #333; background-color: #f5f5f5; border-color: #ddd;">
-				<h3 class=""><span class="badge" v-text="sites[current_site_key].site_products[current_product_key].product_airport"></span> <span class="badge" v-text="sites[current_site_key].site_products[current_product_key].product_type">MG</span> Drivefly </h3>
+				<h3 class="">
+					<span class="badge" v-text="sites[current_site_key].site_products[current_product_key].product_airport"></span>
+					<span class="badge" v-text="sites[current_site_key].site_products[current_product_key].product_type"></span>
+					<span v-text="sites[current_site_key].site_products[current_product_key].product_name"></span>
+				</h3>
 			</div>
 			<div class="panel-body">
 				<table class="table table-hover">
@@ -128,12 +133,26 @@ include('top_search.php');
 					<template v-if="'undefined' !== typeof sites[current_site_key].site_products[current_product_key].bands">
 						<tr v-for="(month, mKey) in table.months">
 							<td v-text="month"></td>
-							<td v-for="(item, key) in sites[current_site_key].site_products[current_product_key].bands[mKey]" v-text="item.b" v-bind:class="'band' + item.b"></td>
+							<td v-for="(item, key) in sites[current_site_key].site_products[current_product_key].bands[mKey]" v-bind:class="'band' + item.b">
+								<input class="border-none background-transparent" type="text" v-model="item.b" v-on:change="bandsChanged(item.b, item.d, item.i)">
+							</td>
 						</tr>
 					</template>
 					</tbody>
 				</table>
-				<a href="api/print/pdf.pricelist.php?product_id=x" target="_blank" class="btn btn-primary btn-large pull-left distant-tl-20-6">Export to PDF</a>
+
+				<div class="row">
+					<div class="col-lg-12">
+						<div class="btn-group pull-left">
+							<a href="api/print/pdf.pricelist.php?product_id=x" target="_blank" class="btn btn-primary btn-large pull-left distant-tl-20-6">Export to PDF</a>
+						</div>
+
+						<div class="btn-group pull-right" v-if="bandschanged">
+							<button type="button" class="btn btn-large  btn-success " v-on:click="saveBands()">Save</button>
+						</div>
+					</div>
+				</div>
+
 			</div>
 		</div>
 
@@ -142,7 +161,7 @@ include('top_search.php');
 				<thead>
 				<tr>
 					<th></th>
-					<template v-for="(n, index) in 15">
+					<template v-for="(n, index) in options.grid_threshold">
 						<th v-text="n"></th>
 					</template>
 					<th>Next days</th>
@@ -154,54 +173,53 @@ include('top_search.php');
 				<tbody>
 				<tr>
 					<td></td>
-					<template v-for="(el, eKey) in gridItem">
+
+					<!-- Grid Item Properties : -->
+					<template v-for="(el, ipKey) in gridItem">
 
 						<!-- Editable inputs -->
-						<template v-if="eKey > 0 && eKey <= options.grid_threshold">
+						<template v-if="ipKey > 0 && ipKey <= options.grid_threshold">
 							<td>
 								<div class="form-group">
-									<input class="" type="text" v-model="gridItem[eKey]">
+									<input class="grid_item_prop" type="text" v-model="gridItem[ipKey]" v-on:change="gridItemPropChanged(giKey, ipKey, $event)" v-on:focus="storeOldVal($event)" v-on:blur="clearOldVal()">
 								</div>
 							</td>
 						</template>
 
 						<!-- Next days input disabled -->
-						<td v-if="eKey == (options.grid_threshold + 1)">
+						<td v-if="ipKey == (options.grid_threshold + 1)">
 							<div class="form-group">
 								<input class="" type="text" v-model="gridItem[0]" disabled>
 							</div>
 						</td>
 
 						<!-- Rest of disabled inputs -->
-						<template v-if="eKey > options.grid_threshold && eKey <= options.grid_limit">
+						<template v-if="ipKey > options.grid_threshold && ipKey <= options.grid_limit">
 							<td>
 								<div class="form-group">
-									<input class="" type="text" v-model="gridItem[eKey]" disabled>
+									<input class="" type="text" v-model="gridItem[ipKey]" disabled>
 								</div>
 							</td>
 						</template>
 
 					</template>
 				</tr>
-
 				<tr>
-					<td colspan="22">
+					<td v-bind:colspan="options.grid_limit + 2">
 						<div class="row">
 							<div class="col-4">
 								<span class="fsz-20" v-text="gridItem.band"></span>
 								<span class="form-inline ml-50">
                                    <div class="form-group">
                                        <label>+ -</label>
-                                       <input type="number" step="1" class="form-controler" style="width: 70px" v-on:change="changeGridValues(giKey, $event)">
+                                       <input type="number" step="1" class="form-controler" style="width: 70px" v-model="gridItem.knobval" v-on:change="knobUpdate(giKey, $event)">
                                    </div>
                                </span>
 							</div>
 							<div class="col-4"></div>
-
 							<div class="col-4 text-right">
-								<button type="button" class="btn btn-large btn-success pull-right" v-on:click="saveGridValues(giKey)">Save</button>
+								<button type="button" class="btn btn-large btn-success pull-right" v-on:click="saveGridValues(giKey, $event)">Save</button>
 							</div>
-
 						</div>
 					</td>
 				</tr>
@@ -210,8 +228,38 @@ include('top_search.php');
 		</div>
 	</div>
 	</template>
+
+	<template v-if="null !== current_site_key && null !== current_product_key">
+		<div class="row">
+			<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
+				<div class="panel panel-default">
+					<div class="panel-heading">Promo codes</div>
+					<div class="panel-body">
+						<div class="form-group" v-for="(promo, pKey) in sites[current_site_key].site_products[current_product_key].promo">
+							<input type="text" disabled="true" class="form-control" v-model="promo.promocode">
+							<input type="text" disabled="true" class="form-control" v-model="promo.discount" style="width: 50px;">
+							<button type="button" class="btn btn-default pull-right" v-on:click="removePromo(promo.promo_id)" tooltip="Delete">
+									Remove <!-- <span class="glyphicon glyphicon-remove"></span> -->
+							</button>
+						</div>
+
+						<div class="form-group">
+							<input type="text" class="form-control" v-model="newpromo.code">
+							<input class="form-control" v-model="newpromo.discount" type="number" style="width: 68px;" min="0" max="100" step="1" required="required" title="">
+							<button type="button" class="btn btn-default pull-right" v-on:click="addPromo()" tooltip="Add">
+								Add
+<!--								<span class="glyphicon glyphicon-plus"></span>-->
+							</button>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</template>
+
+
 </div>
-<!-- // stop prices -->
+<!-- // end prices app -->
 
 <?php
 
@@ -224,26 +272,6 @@ include('modal.php');
     $(function () {
         $('[data-toggle="tooltip"]').tooltip()
     })
-</script>
-
-<script>
-
-    $(document).ready(function() {
-
-        $(".consolidators").click(function(){
-
-            $(".consolidators").removeClass("btn-success");
-            $(this).addClass("btn-success");
-            console.log('consolidator: '+this.value);
-        });
-
-        $(".packages").click(function(){
-
-            $(".packages").removeClass("btn-success");
-            $(this).addClass("btn-success");
-            console.log('packs: '+this.value);
-        });
-    });
 </script>
 </body>
 </html>

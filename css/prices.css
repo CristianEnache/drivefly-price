@@ -35,3 +35,12 @@ table.band th{
 .days input:disabled{
     background-color: #dddddd;
 }
+
+
+.border-none{
+    border: none !important;
+}
+
+.background-transparent{
+    background-color: transparent !important;
+}
