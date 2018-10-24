@@ -236,22 +236,26 @@ include('top_search.php');
 				<div class="panel panel-default">
 					<div class="panel-heading">Promo codes</div>
 					<div class="panel-body">
-						<div class="form-group" v-for="(promo, pKey) in sites[current_site_key].site_products[current_product_key].promo">
-							<input type="text" disabled="true" class="form-control" v-model="promo.promocode">
-							<input type="text" disabled="true" class="form-control" v-model="promo.discount" style="width: 50px;">
-							<button type="button" class="btn btn-default pull-right" v-on:click="removePromo(promo.promo_id)" tooltip="Delete">
-									Remove <!-- <span class="glyphicon glyphicon-remove"></span> -->
-							</button>
-						</div>
+						<form action="" class="form-inline ng-pristine ng-valid-min ng-valid-max ng-valid-step ng-invalid ng-invalid-required">
 
-						<div class="form-group">
-							<input type="text" class="form-control" v-model="newpromo.code">
-							<input class="form-control" v-model="newpromo.discount" type="number" style="width: 68px;" min="0" max="100" step="1" required="required" title="">
-							<button type="button" class="btn btn-default pull-right" v-on:click="addPromo()" tooltip="Add">
-								Add
-<!--								<span class="glyphicon glyphicon-plus"></span>-->
-							</button>
-						</div>
+							<div class="form-group" v-for="(promo, pKey) in sites[current_site_key].site_products[current_product_key].promo">
+								<input type="text" disabled="true" class="form-control" v-model="promo.promocode">
+								<input type="text" disabled="true" class="form-control" v-model="promo.discount" style="width: 50px;">
+								<button type="button" class="btn btn-default pull-right" v-on:click="removePromo(promo.promo_id)" tooltip="Delete">
+									Remove <!-- <span class="glyphicon glyphicon-remove"></span> -->
+								</button>
+							</div>
+
+							<div class="form-group">
+								<input type="text" class="form-control" v-model="newpromo.code">
+								<input class="form-control" v-model="newpromo.discount" type="number" style="width: 68px;" min="0" max="100" step="1" required="required" title="">
+								<button type="button" class="btn btn-default pull-right" v-on:click="addPromo()" tooltip="Add">
+									Add
+									<!--								<span class="glyphicon glyphicon-plus"></span>-->
+								</button>
+							</div>
+
+						</form>
 					</div>
 				</div>
 			</div>
