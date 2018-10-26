@@ -217,8 +217,16 @@ include('top_search.php');
                                    </div>
                                </span>
 							</div>
-							<div class="col-4"></div>
+							<div class="col-4 text-center">
+								<div class="form-group">
+									<input type="text" name="clipboard" value="">
+									<button type="button" class="btn btn-xs btn-secondary" v-on:click="pasteValues(giKey, $event)">Paste</button>
+								</div>
+							</div>
 							<div class="col-4 text-right">
+								<button type="button" class="btn btn-large btn-secondary pull-right" v-on:click="copyValues(giKey)">
+									Copy
+								</button>
 								<button type="button" class="btn btn-large btn-success pull-right" v-on:click="saveGridItem(giKey, $event)">Save</button>
 							</div>
 						</div>

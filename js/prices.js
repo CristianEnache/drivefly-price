@@ -29,6 +29,72 @@ var pricesApp = new Vue({
 
     methods : {
 
+        copyValues : function(giKey){
+
+                // Getting rid of VUE reactivity
+                let values =  JSON.parse(JSON.stringify(this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey]));
+
+                delete values.band;
+                delete values.knobval;
+
+                values = JSON.stringify(values);
+
+
+                link = 'http://google.ro';
+
+                // Create a dummy input to copy the string array inside it
+                var dummy = document.createElement("input");
+
+                // Add it to the document
+                document.body.appendChild(dummy);
+
+                // Set its ID
+                // dummy.setAttribute("class", "hidden");
+                dummy.setAttribute("id", "dummy_id");
+
+                // Output the array into it
+                document.getElementById("dummy_id").value=values;
+
+                // Select it
+                dummy.select();
+
+                // Copy its contents
+                document.execCommand("copy");
+
+                // Remove it as its not needed anymore
+                document.body.removeChild(dummy);
+
+
+            console.log('Copied');
+
+
+        },
+
+        triggerPaste : function(giKey, evt){
+
+        },
+
+        pasteValues : function(giKey, evt){
+
+            try{
+
+
+                let neighbour_input = evt.target.parentNode.childNodes[0];
+
+                let values = JSON.parse(neighbour_input.value);
+                console.log(values);
+                neighbour_input.value = '';
+
+                values.band = this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey].band;
+                values.knobval = this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey].knobval;
+                Vue.set(this.sites[this.current_site_key].site_products[this.current_product_key].grid, giKey, values);
+
+            }catch(err){
+                alert('The string you pasted is not valid JSON. \n\n Please don\'t change the text after you have clicked copy');
+            }
+
+        },
+
         saveBands : function(b, d, i){
             $.ajax({
                 context : this,
