@@ -200,8 +200,8 @@ var pricesApp = new Vue({
 
             $.ajax({
                 context : this,
-                url: window.baseurl,
-                type: 'post',
+                url: window.baseurl + '/request_dummy_data/success.json',
+                type: 'get',
                 dataType: 'json',
                 data: {
                     '_token' : 'entersessiontokenhere',
