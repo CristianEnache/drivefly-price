@@ -1,4 +1,4 @@
-    window.baseurl = "http://drivefly.xyz";
+window.baseurl = "http://drivefly.xyz";
 
 var pricesApp = new Vue({
     el: '#prices_app',
@@ -39,9 +39,6 @@ var pricesApp = new Vue({
 
                 values = JSON.stringify(values);
 
-
-                link = 'http://google.ro';
-
                 // Create a dummy input to copy the string array inside it
                 var dummy = document.createElement("input");
 
@@ -65,9 +62,6 @@ var pricesApp = new Vue({
                 document.body.removeChild(dummy);
 
 
-            console.log('Copied');
-
-
         },
 
         triggerPaste : function(giKey, evt){
@@ -82,7 +76,6 @@ var pricesApp = new Vue({
                 let neighbour_input = evt.target.parentNode.childNodes[0];
 
                 let values = JSON.parse(neighbour_input.value);
-                console.log(values);
                 neighbour_input.value = '';
 
                 values.band = this.sites[this.current_site_key].site_products[this.current_product_key].grid[giKey].band;
@@ -329,10 +322,6 @@ var pricesApp = new Vue({
             });
         },
 
-        removePromo : function(promo_id){
-
-        },
-
         addPromo : function(){
 
 
@@ -358,6 +347,26 @@ var pricesApp = new Vue({
                 Vue.set(pricesApp.newpromo, 'discount', 1);
                 alert('DEV: Add promo request sent');
 
+            });
+        },
+
+
+        removePromo : function(promo_id, pKey){
+
+            $.ajax({
+                context : this,
+                url: window.baseurl + '/request_dummy_data/success.json',
+                type: 'GET',
+                dataType: 'json',
+                data: {
+                    '_token' : 'entersessiontokenhere',
+                    'site_id' : this.sites[this.current_site_key].site_id,
+                    'product_id' : this.sites[this.current_site_key].site_products[this.current_product_key].product_id,
+                    'promo_id' : promo_id,
+                    'action' : 'removePromo',
+                },
+            }).done(function(response) {
+                this.sites[this.current_site_key].site_products[this.current_product_key].promo.splice(pKey, 1);
             });
         }
 

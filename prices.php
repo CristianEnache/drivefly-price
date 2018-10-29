@@ -142,7 +142,7 @@ include('top_search.php');
 					</tbody>
 				</table>
 
-				<div class="row">
+				<div class="row nomargins">
 					<div class="col-lg-12">
 						<div class="btn-group pull-left">
 							<a href="api/print/pdf.pricelist.php?product_id=x" target="_blank" class="btn btn-primary btn-large pull-left distant-tl-20-6">Export to PDF</a>
@@ -207,7 +207,7 @@ include('top_search.php');
 				</tr>
 				<tr>
 					<td v-bind:colspan="options.grid_limit + 2">
-						<div class="row">
+						<div class="row nomargins">
 							<div class="col-4">
 								<span class="fsz-20" v-text="gridItem.band"></span>
 								<span class="form-inline ml-50">
@@ -239,7 +239,7 @@ include('top_search.php');
 	</template>
 
 	<template v-if="null !== current_site_key && null !== current_product_key">
-		<div class="row">
+		<div class="row nomargins">
 			<div class="col-xs-12 col-sm-8 col-md-6 col-lg-4">
 				<div class="panel panel-default">
 					<div class="panel-heading">Promo codes</div>
@@ -249,7 +249,7 @@ include('top_search.php');
 							<div class="form-group" v-for="(promo, pKey) in sites[current_site_key].site_products[current_product_key].promo">
 								<input type="text" disabled="true" class="form-control" v-model="promo.promocode">
 								<input type="text" disabled="true" class="form-control" v-model="promo.discount" style="width: 50px;">
-								<button type="button" class="btn btn-default pull-right" v-on:click="removePromo(promo.promo_id)" tooltip="Delete">
+								<button type="button" class="btn btn-default pull-right" v-on:click="removePromo(promo.promo_id, pKey)" tooltip="Delete">
 									Remove <!-- <span class="glyphicon glyphicon-remove"></span> -->
 								</button>
 							</div>

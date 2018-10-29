@@ -1,4 +1,8 @@
-.btn{
+.nomargins{
+    margin: 0 !important;
+}
+
+#prices_app .btn{
     padding: 10px 22px !important;
 }
 
