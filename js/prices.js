@@ -91,7 +91,7 @@ var pricesApp = new Vue({
         saveBands : function(b, d, i){
             $.ajax({
                 context : this,
-                url: window.baseurl,
+                url: window.baseurl + '/ajax_bands_save.php',
                 type: 'post',
                 dataType: 'json',
                 data: {
@@ -200,8 +200,8 @@ var pricesApp = new Vue({
 
             $.ajax({
                 context : this,
-                url: window.baseurl + '/request_dummy_data/success.json',
-                type: 'get',
+                url: window.baseurl + '/ajax_prices_save.php',
+                type: 'post',
                 dataType: 'json',
                 data: {
                     '_token' : 'entersessiontokenhere',
