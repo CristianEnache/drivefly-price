@@ -42,7 +42,7 @@ include('_functions.php');
 	<!--	<script src="_design-01/js/dropzone.js"></script>-->
 
 
-	<link rel="stylesheet" type="text/css" href="css/prices.css" >
+	<link rel="stylesheet" type="text/css" href="/css/prices.css" >
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 
 </head>
